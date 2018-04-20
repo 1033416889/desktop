@@ -1,0 +1,86 @@
+#include<iostream>
+#include<iomanip>
+#include<fstream>
+
+void MySwap(int *A, int m, int n,int nCol,int nRow)             //循环交换函数
+{
+	int i(m), j(n);
+	while (1)
+	{
+		int c = *(A + nRow * m + n);
+		*(A + nRow * m + n) = *(A + j * nCol + i);
+		*(A + j * nCol + i) = c;
+		int ii = i, jj = j;
+		i = (jj * nCol + ii) / nRow;
+		j = (jj * nCol + ii) % nRow;
+		if (i == m & j == n)
+			break;
+	}
+}
+int Next(int *m, int *n, int *p1)                     //判断是否重复
+{
+	int p2(*n * 3 + *m);//转置后的位数
+	*m = p2 / 5;//转置后改变其坐标
+	*n = p2 % 5;
+	if (p2 < *p1)    //判断转置前后的位数，若转置后小于转置前，说明其重复
+		return 1;
+	else
+		return 0;
+}
+int* In(int*m, int*n)    //读取文件
+{
+	ifstream in;
+	//in.open("C:\\Users\Terrans Force\Desktop\c++\homework\homework\123.txt");
+	in.open("D:\\123.txt");
+	in >> *m >> *n;
+	int *A = new int[*m * *n];
+	for (int i = 0; i < *m**n; i++)
+		in >> A[i];
+	return A;
+}
+void Out(int*A, int m, int n)       //输出文件
+{
+	ofstream out;
+	out.open("D:\\1234.txt");
+	out << "转置后输出的行数为： " << n << endl;
+	out << "转置后输出的列数为： " << m << endl;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+			out << setw(4) << A[i*m + j];
+		out << endl;
+	}
+}
+int main()
+{
+	int m, n ;
+	int *A=In(&m, &n);
+	int *pA = (int *)A;
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			int control;
+			int mm(i), nn(j);
+			int p1(mm * 5 + nn);//转置前的位数
+			while (1)
+			{
+				if (Next(&mm,&nn,&p1))
+				{
+					control = 0;
+					break;
+				}
+				if (mm == i & nn == j)
+				{
+					control = 1;
+					break;
+				}
+			}
+			if (control)
+			{
+				MySwap(pA, i, j,m,n);
+			}
+		}
+	}
+	Out(A, m, n);
+}
